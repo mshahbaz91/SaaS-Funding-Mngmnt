@@ -1,0 +1,90 @@
+﻿.leadActivityStatus_Circle
+{
+    border: 1px solid #a1a1a1;
+    padding : 8px 8px;
+    width: 10px;
+    border-radius: 100%;
+    margin-left: auto;
+    margin-right: auto;
+   
+}
+
+.leadActivityStatus_Circle2
+{
+    border: 1px solid #a1a1a1;
+    padding : 8px 8px;
+    width: 6px;
+    border-radius: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+
+.leadActivityStatus_Oval
+{
+   width: 60px;
+	height: 30px;
+	background: #FFFFFF;
+	-moz-border-radius: 100px / 50px;
+	-webkit-border-radius: 100px / 50px;
+	border-radius: 100px / 50px;
+}
+
+
+/*#oval {
+	width: 200px;
+	height: 100px;
+	background: red;
+	-moz-border-radius: 100px / 50px;
+	-webkit-border-radius: 100px / 50px;
+	border-radius: 100px / 50px;
+}*/
+
+
+
+/*.leadActivityStatus_Square
+{
+    width:  60px;
+    height: 60px;
+}
+
+.leadActivityStatus_Radio
+{
+     -webkit-appearance:none;
+    width:20px;
+    height:20px;
+    border:1px solid darkgray;
+    border-radius:50%;
+    outline:none;
+    box-shadow:0 0 5px 0px gray inset;
+}*/
+
+
+/* file upload style */
+
+.file {
+  visibility: hidden;
+  position: absolute;
+}
+
+
+
+.form-control {
+  display: block;
+  width: 100%;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+  -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+       -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+          transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
