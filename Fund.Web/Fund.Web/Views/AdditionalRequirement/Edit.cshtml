@@ -1,0 +1,104 @@
+﻿@model HFund.Data.Models.AdditionalRequirement
+@using HFund.Repository
+@using HFund.Utility
+
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_TCLHINLayout.cshtml";
+    int _ProjectCharterStatusID = ViewBag.ProjectCharterStatusID;
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-lg-2">
+            @Html.Partial("_ProjectCharterLeftSideMenu", (int)Model.FundingDetailID)
+        </div>
+
+        <div class="col-lg-10">
+            <h4> Additional Requirement </h4>
+            @Html.Action("ProjectStatusInfo", "CommonPartialView", new { id = Model.FundingDetailID })
+            <hr />
+
+            <div class="form-horizontal">
+
+                <div class="row">
+                    &nbsp;
+                </div>
+
+                <div class="row  col-lg-offset-4">
+                        <span class="text-success">
+                            @ViewBag.Message
+                            @if (TempData[Common.AdditionalRequirement_PC_TempDataKey] != null)
+                            {
+                                @TempData[Common.AdditionalRequirement_PC_TempDataKey]
+                            }
+                        </span>
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                 
+                </div>
+
+                <div class="row">
+                    &nbsp;
+                </div>
+
+
+
+                <div class="row">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Requirement, htmlAttributes: new { @class = "control-label col-lg-4" })
+                        <div class="col-lg-5">
+                            @Html.TextAreaFor(model => model.Requirement, new { @class = "form-control", rows = Common.TextArea_Rows_Size })
+                            @Html.ValidationMessageFor(model => model.Requirement, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-lg-3"></div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-lg-4" })
+                        <div class="col-lg-5">
+                            @Html.TextAreaFor(model => model.Description, new { @class = "form-control", rows = Common.TextArea_Rows_Size })
+                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-lg-3"></div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    @Html.HiddenFor(model => model.FundingDetailID)
+                    @Html.HiddenFor(model => model.AdditionalRequirementID)
+                    @Html.HiddenFor(model => model.SeqNo)
+                    @Html.Hidden("EditMode", 1)
+                </div>
+
+
+                <div class="row  col-lg-offset-4 ">
+                  
+                            @if (_ProjectCharterStatusID != SystemValues.CharterApprovedStatus)
+                            {
+                                <input type="submit" value="@Common.BTNSave" class="btn btn-success" />
+                                <span class="TabSpaceRight"></span>
+                                @Html.ActionLink(Common.BTNCancel, "Details", new { id = Model.FundingDetailID }, new { @class = "btn btn-warning" })
+                            }
+                       
+                </div>
+
+
+            </div>
+
+
+
+        </div>
+
+
+    </div>
+
+
+}

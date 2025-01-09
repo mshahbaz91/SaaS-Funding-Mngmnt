@@ -1,0 +1,124 @@
+﻿@model HFund.Data.Models.Activity
+@using HFund.Repository
+@using HFund.Utility
+
+@{
+    ViewBag.Title = "Create New Activity";
+    Layout = "~/Views/Shared/_TCLHINLayout.cshtml";
+}
+
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-lg-2">
+            @Html.Partial("_ProjectQuarterlyReportLeftSideMenu", Model.FundingDetailID)
+        </div>
+
+        <div class="col-lg-10">
+            <h4> Actvity Planned </h4>
+            @Html.Action("ProjectStatusInfo", "CommonPartialView", new { id = Model.FundingDetailID })
+            <hr />
+
+            <div class="col-lg-12">
+
+                <div class="form-horizontal">
+
+
+                    <div class="row   col-lg-offset-4">
+
+                        <span class="text-success">
+                            @ViewBag.Message
+                            @if (TempData[Common.HSP_Activity_PQR_TempDataKey] != null)
+                            {
+                                @TempData[Common.HSP_Activity_PQR_TempDataKey]
+                            }
+                        </span>
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    </div>
+
+                    <div class="row">
+                        &nbsp;
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ActivitySeqNo, htmlAttributes: new { @class = "control-label col-lg-4" })
+                            <div class="col-lg-5">
+                                @Html.EditorFor(model => model.ActivitySeqNo, new { htmlAttributes = new { @class = "form-control", @maxlength = "4", disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.ActivitySeqNo, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-lg-3"></div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ActivityDescription, htmlAttributes: new { @class = "control-label col-lg-4" })
+                            <div class="col-lg-5">
+                                @Html.TextAreaFor(model => model.ActivityDescription, new { @class = "form-control", rows = Common.TextArea_Rows_Size })
+                                @Html.ValidationMessageFor(model => model.ActivityDescription, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-lg-3"></div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.PlannedCompletedInd, htmlAttributes: new { @class = "control-label col-lg-4" })
+                            <div class="col-lg-5">
+
+                                @Html.CheckBoxFor(model => model.PlannedCompletedInd, new { @disabled = "disabled" })
+                                @Html.ValidationMessageFor(model => model.PlannedCompletedInd, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-lg-3"></div>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="row">
+                        @Html.HiddenFor(model => model.FundingDetailID)
+                        @Html.HiddenFor(model => model.ActivityID)
+                        @Html.HiddenFor(model => model.ActivitySeqNo)
+                        @Html.Hidden("EditMode", 0)
+                    </div>
+
+
+                    <div class="row   col-lg-offset-4 ">
+
+                        <input type="submit" value="@Common.BTNSave" class="btn btn-success" />
+                        <span class="TabSpaceRight"></span>
+                        <input type="submit" name="submitBtn" value="@Common.BTNSaveNew" class="btn btn-success" />
+                        <span class="TabSpaceRight"></span>
+                        @Html.ActionLink(Common.BTNCancel, "Details", new { id = Model.FundingDetailID }, new { @class = "btn btn-warning" })
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+
+    </div>
+
+
+}

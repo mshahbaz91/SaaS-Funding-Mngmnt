@@ -1,0 +1,86 @@
+﻿@model IEnumerable<HFund.Data.Models.ExpenseCategory>
+@using HFund.Utility
+@using HFund.Data.Models
+
+@{
+    ViewBag.Title = "Expense Category Details";
+    Layout = "~/Views/Shared/_TCLHINLayout.cshtml";
+}
+
+
+
+@section _Inspinia_Tclhin_LeftSideNavigationMenu {
+
+    @Html.Partial("_AdminLeftSideMenu")
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2>Expense Category</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="@Url.Action("Index", "TclhinHome")">Home</a>
+                </li>
+                <li class="active">
+                    <a href="@Url.Action("Details", "Admin_ExpenseCategory")">Expense Category</a>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+    </div>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="" ibox float-e-margins"">
+
+                    <div class="ibox-content">
+
+                        <div class="text-left">
+                            <span class="text-info">
+                                @ViewBag.Message
+                                @if (TempData[Common.Admin_ExpenseCategory_TempDataKey] != null)
+                                {
+                                    @TempData[Common.Admin_ExpenseCategory_TempDataKey]
+                                }
+                            </span>
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        </div>
+                        <br />
+                        <table class="table table-bordered table-condensed table-hover table-striped table-responsive" id="tblFiscalYear">
+
+                            <tr>
+                                <th> Expense Category</th>
+                            
+                                <th class="text-center"> Active </th>
+                                <th class="text-center">@Html.ActionLink(" ", "Create", null, new { @class = "fa fa-plus-square" })</th>
+                            </tr>
+
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td> @Html.DisplayFor(modelItem => item.ExpenseCategoryDescription)  </td>
+                                   
+                                    <td class="text-center"> @Html.CheckBoxFor(modelItem => item.ActiveInd, new { @disabled = "disabled" })</td>
+                                    <td class="text-center">
+                                        @Html.ActionLink(" ", "Edit", new { id = item.ExpenseCategoryID }, new { @class = "fa fa-edit" })
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

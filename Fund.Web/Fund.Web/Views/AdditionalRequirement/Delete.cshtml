@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_TCLHINLayout.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-lg-2">
+        @Html.Partial("_ProjectCharterLeftSideMenu", (int)ViewBag.FundingDetailID)
+    </div>
+
+    <div class="col-lg-10">
+        <div class="form-horizontal">
+            <h3> Delete Additional Requirement  </h3>
+            @Html.Action("ProjectStatusInfo", "CommonPartialView", new { id = (int)ViewBag.FundingDetailID })
+            <hr />
+            <h4>Delete Additional Requirement with internal server error ... or not found </h4>
+
+        </div>
+
+    </div>
+
+
+</div>

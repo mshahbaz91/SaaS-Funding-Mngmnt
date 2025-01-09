@@ -1,0 +1,269 @@
+﻿@model HFund.Data.Models.ActionPlan
+@using HFund.Utility
+@using HFund.Web.HtmlHelpers;
+
+@{
+    ViewBag.Title = "Edit Action Plan";
+    Layout = "~/Views/Shared/_TCLHINLayout.cshtml";
+    int StrategicPriorityID = ViewBag.StrategicPriorityID ?? 0;
+    int DeliverableWorkStreamID = ViewBag.DeliverableWorkStreamID ?? 0;
+    int WorkPlanDeliverableID = ViewBag.WorkPlanDeliverableID ?? 0;
+    int FiscalYearID = ViewBag.FiscalYearID ?? 0;
+    String FiscalYearDescription = ViewBag.FiscalYearDescription ?? String.Empty;
+}
+
+@section _Inspinia_Tclhin_LeftSideNavigationMenu {
+    @Html.Partial("_AdminLeftSideMenu")
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2>@ServerConfiguration.Caption_ActionPlan</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="@Url.Action("Index", "TclhinHome")">Home</a>
+                </li>
+                <li class="active">
+                    <a href="@Url.Action("Details", "Admin_ActionPlan")">@ServerConfiguration.Caption_ActionPlan</a>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+    </div>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="" ibox float-e-margins"">
+
+                    <div class="ibox-content">
+
+                        <div class="text-left">
+                            <span class="text-info">
+                                @ViewBag.Message
+                                @if (TempData[Common.Admin_ActionPlan_TempDataKey] != null)
+                                {
+                                    @TempData[Common.Admin_ActionPlan_TempDataKey]
+                                }
+                            </span>
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        </div>
+                        <br />
+
+                        <div class="row">
+                            <div class="col-lg-3"></div>
+                            @Html.Label("Fiscal Year ", htmlAttributes: new { @class = "control-label col-lg-6" })
+                            <div class="col-lg-3"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3"></div>
+                            <div class="form-group">
+                                <div class="col-lg-6">
+                                    @Html.Editor("FiscalYearDescription", new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                    @Html.ValidationMessageFor(model => model.WorkPlanDeliverable.FiscalYear, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-lg-3"></div>
+                            </div>
+                        </div>
+                        <br />
+
+                        <div class="row">
+                            <div class="col-lg-3"></div>
+                            @Html.Label("Strategic Priority", htmlAttributes: new { @class = "control-label col-lg-6" })
+                            <div class="col-lg-3"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3"></div>
+                            <div class="form-group">
+                                <div class="col-lg-6">
+                                    @Html.EditorFor(model => model.WorkPlanDeliverable.WorkStream.StrategicPriority.PriorityDescription, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                    <div class="text-danger" id="PriorityError"></div>
+                                </div>
+                                <div class="col-lg-3"></div>
+                            </div>
+                        </div>
+                        <br />
+
+                        <div class="row">
+                            <div class="col-lg-3"></div>
+                            @Html.LabelFor(model => model.WorkPlanDeliverable.WorkStreamID, htmlAttributes: new { @class = "control-label col-lg-6" })
+                            <div class="col-lg-3"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3"></div>
+                            <div class="form-group">
+                                <div class="col-lg-6">
+                                    @Html.EditorFor(model => model.WorkPlanDeliverable.WorkStream.WorkStreamDescription, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                </div>
+                                <div class="col-lg-3"></div>
+                            </div>
+                        </div>
+                        <br />
+
+                        <div class="row">
+                            <div class="col-lg-3"></div>
+                            @Html.Label(@ServerConfiguration.Caption_WorkPlanDeliverable, htmlAttributes: new { @class = "control-label col-lg-2", @style = "text-align:left" })
+                            <div class="col-lg-3"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3"></div>
+                            <div class="form-group">
+                                <div class="col-lg-6">
+                                    @Html.EditorFor(model => model.WorkPlanDeliverable.DeliverableDescription, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @Value = Model.WorkPlanDeliverable.DeliverableNo + " - " + Model.WorkPlanDeliverable.DeliverableDescription } })
+                                </div>
+                                <div class="col-lg-3"></div>
+                            </div>
+                        </div>
+                        <br />
+
+                        <div class="row">
+                            <div class="col-lg-3"></div>
+                            <div class="col-lg-6">
+                                @Html.Label(@ServerConfiguration.Caption_ActionPlan, htmlAttributes: new { @class = "control-label" })
+                                @Html.RequiredIndicator()
+                            </div>
+                            <div class="col-lg-3"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3"></div>
+                            <div class="form-group">
+                                <div class="col-lg-6">
+                                    @Html.TextAreaFor(model => model.ActionPlanDescription, new { @class = "form-control", rows = Common.TextArea_Rows_Size, style = "resize:none" })
+                                    @Html.ValidationMessageFor(model => model.ActionPlanDescription, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-lg-3"></div>
+                            </div>
+                        </div>
+                        <br />
+
+                        <div class="row">
+                            <div class="col-lg-3"></div>
+                            <div class="col-lg-6">
+                                @Html.LabelFor(model => model.ActionPlanDueDate, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-lg-3"></div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-lg-3"></div>
+                                <div class="col-lg-6">
+                                    <div class="input-group date">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        @Html.TextBoxFor(model => model.ActionPlanDueDate, new { Value = Model.ActionPlanDueDate.HasValue ? Model.ActionPlanDueDate.Value.ToString("MM/dd/yyyy") : string.Empty, @class = "form-control" })
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.ActionPlanDueDate, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-lg-3"></div>
+                            </div>
+                        </div>
+                        <br />
+
+                        <div class="row">
+                            <div class="col-lg-3"></div>
+                            @Html.LabelFor(model => model.ActiveInd, htmlAttributes: new { @class = "control-label col-lg-6" })
+                            <div class="col-lg-3"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3"></div>
+                            <div class="form-group">
+                                <div class="col-lg-6">
+                                    @Html.CheckBoxFor(model => model.ActiveInd)
+                                    @Html.ValidationMessageFor(model => model.ActiveInd, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-lg-3"></div>
+                            </div>
+                        </div>
+                        <br />
+
+                        <div class="row">
+                            @Html.HiddenFor(model => model.ActionPlanID)
+                            @Html.Hidden("WorkPlanDeliverableID", WorkPlanDeliverableID)
+                            @Html.Hidden("PriorityID", StrategicPriorityID)
+                            @Html.Hidden("FiscalYearID", FiscalYearID)
+                            @Html.Hidden("EditMode", 0)
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3"></div>
+                            <div class="col-lg-6">
+                                @Html.SubmitButtonEditWithIcon(null, null, null, null, new { id = "btnSave" })
+                                <span class="TabSpaceRight"></span>
+                                @Html.CancelLinkButton(null, "Admin_ActionPlan", @"Details?FiscalYearID=" + FiscalYearID.ToString() + @"&PriorityID=" + StrategicPriorityID.ToString() + @"&WorkStreamID=" + DeliverableWorkStreamID.ToString() + @"&WorkPlanDeliverableID=" + WorkPlanDeliverableID.ToString(), null, "<i class='fa fa-ban'></i>&nbsp;Cancel", null, "btn btn-warning")
+                            </div>
+                            <div class="col-lg-3"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Styles {
+    @Styles.Render("~/plugins/dataPickerStyles")
+}
+
+@section Scripts {
+    @Scripts.Render("~/plugins/dataPicker")
+
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("#PriorityError").hide();
+
+            $('.input-group.date').datepicker({
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                calendarWeeks: true,
+                autoclose: true
+            });
+
+        });
+
+        function PrioritySelected(elem) {
+            if (elem.value != '') {
+                $("#PriorityID").val(elem.value);
+            } else {
+                $("#PriorityID").val('0');
+            }
+            buildWorkStreamList();
+        }
+
+        function buildWorkStreamList() {
+            $("#PriorityError").hide();
+            var PriorityID = { PriorityID: $("#PriorityID").val() };
+            $.ajax({
+                url: '/api/WorkStreamApi/GetWorkStreamFilterByPriorityId/',
+                type: 'POST',
+                data: JSON.stringify(PriorityID),
+                dataType: 'json',
+                processData: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data, status, xhr) {
+                    $('#WorkStreamID').empty();
+                    $('#WorkStreamID').append("<option value=''>" + "Select ..." + "</option>");
+                    if (data.length > 0) {
+                        for (var i = 0 ; i < data.length; i++) {
+                            $('#WorkStreamID').append("<option value='" + data[i].workStreamID + "'>" + data[i].workStreamDescription + "</option>");
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $("#PriorityError").show();
+                    $("#PriorityError").text(error);
+                }
+            });
+        }
+
+    </script>
+}

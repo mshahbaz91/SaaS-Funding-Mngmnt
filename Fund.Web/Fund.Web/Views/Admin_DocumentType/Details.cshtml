@@ -1,0 +1,148 @@
+﻿@model IEnumerable<HFund.Data.Models.DocumentType>
+@using HFund.Utility
+@using HFund.Data.Models
+
+
+
+@{
+    ViewBag.Title = "Document Type Details";
+    Layout = "~/Views/Shared/_TCLHINLayout.cshtml";
+    int EntityTypeID = (int)ViewBag.EntityTypeID;
+}
+
+
+
+@section _Inspinia_Tclhin_LeftSideNavigationMenu {
+
+    @Html.Partial("_AdminLeftSideMenu")
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2>Document Type</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="@Url.Action("Index", "TclhinHome")">Home</a>
+                </li>
+                <li class="active">
+                    <a href="@Url.Action("Details", "Admin_DocumentType")">Document Type </a>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+    </div>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="" ibox float-e-margins"">
+
+                    <div class="ibox-content">
+
+                        <div class="text-left">
+                            <span class="text-info">
+                                @ViewBag.Message
+                                @if (TempData[Common.Admin_DocumentType_TempDataKey] != null)
+                                {
+                                    @TempData[Common.Admin_DocumentType_TempDataKey]
+                                }
+                            </span>
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        </div>
+                        <br />
+
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="panel panel-info">
+                                    <div class="panel-heading">Funding Entity Type</div>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="form-group">
+                                                @Html.Label("Entity :", htmlAttributes: new { @class = "control-label col-lg-1", @style = "text-align:right" })
+                                                <div class="col-lg-3">
+                                                    @Html.DropDownList("EntityTypeList", null, "All", new { @class = "form-control", @onChange = "TypeSelected(this)" })
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <br />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <table class="table table-bordered table-condensed table-hover table-striped table-responsive" id="tblDocumentType">
+                            <thead>
+                                <tr>
+                                    <th> Funding Entity Type  </th>
+                                    <th> Document Type Description</th>
+                                    <th class="text-center"> Active </th>
+                                    <th class="text-center">@Html.ActionLink(" ", "Create", null, new { @class = "fa fa-plus-square" })</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td> @Html.DisplayFor(modelItem => item.FundingEntityType.FundingEntityTypeDescription)  </td>
+                                        <td> @Html.DisplayFor(modelItem => item.DocumentTypeDescription)  </td>
+                                        <td class="text-center"> @Html.CheckBoxFor(modelItem => item.ActiveInd, new { @disabled = "disabled" })</td>
+                                        <td class="text-center">
+                                            @Html.ActionLink(" ", "Edit", new { id = item.DocumentTypeID }, new { @class = "fa fa-edit" })
+                                        </td>
+
+                                    </tr>
+                                }
+                            </tbody>
+                    </table>
+                    </div>
+                    @Html.Hidden("EntityTypeID", EntityTypeID)
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Styles {
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+}
+
+@section Scripts {
+    @Scripts.Render("~/plugins/jeditable")
+    @Scripts.Render("~/plugins/dataTables")
+
+    <script type="text/javascript">
+
+        function TypeSelected(elem) {
+            if (elem.value != '') {
+                $("#EntityTypeID").val(elem.value);
+            } else {
+                $("#EntityTypeID").val('0');
+            }
+            var url = '@Html.Raw(Url.Action("Details", new { EntityTypeID = "_EntityTypeID_" }))';
+            window.location.href = url.replace('_EntityTypeID_', elem.value);
+        }
+
+        $(document).ready(function () {
+
+            $('#tblDocumentType').DataTable({
+                "aaSorting": [],
+                "lengthMenu": [[10, 25, 50], [10, 25, 50]],
+                "columns": [
+                    { "data": "Funding Entity Type" },
+                    { "data": "Document Type Description" },
+                    { "data": "Active" },
+                    { "data": "Action", "bSortable": false }
+                ]
+            });
+        });
+
+    </script>
+}

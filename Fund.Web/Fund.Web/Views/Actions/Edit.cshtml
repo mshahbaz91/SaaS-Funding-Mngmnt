@@ -1,0 +1,550 @@
+﻿@model HFund.Data.Models.FundingDetail
+@using HFund.Web.HtmlHelpers;
+@using HFund.Repository;
+@using HFund.Data.ViewModels;
+@using HFund.Web.Models;
+
+
+@{
+    ViewBag.Title = "Action";
+    Layout = "~/Views/Shared/_TCLHINLayout.cshtml";
+    var leftSideMenu = String.Empty;
+
+    List<DocumentViewModel> documentList = ViewBag.DocumentList;
+
+    if (ViewBag.EntityType == SystemValues.BusinessCaseTypeID)
+    {
+        leftSideMenu = "_BusinessCaseLeftSideMenu";
+    }
+    else if (ViewBag.EntityType == SystemValues.FundingRequestTypeID)
+    {
+        leftSideMenu = "_FundingRequestLeftSideMenu";
+    }
+    else if (ViewBag.EntityType == SystemValues.ProjectTypeID)
+    {
+        leftSideMenu = "_ProjectLeftSideMenu";
+    }
+    else if (ViewBag.EntityType == SystemValues.ProjectCharterTypeID)
+    {
+        leftSideMenu = "_ProjectCharterLeftSideMenu";
+    }
+    else if (ViewBag.EntityType == SystemValues.AppendixATypeID)
+    {
+        leftSideMenu = "_AppendixALeftSideMenu";
+    }
+    else if (ViewBag.EntityType == SystemValues.QuarterlyProjectReportTypeID)
+    {
+        leftSideMenu = "_ProjectQuarterlyReportLeftSideMenu";
+    }
+    else if (ViewBag.EntityType == SystemValues.AdminLetterTypeID)
+    {
+        leftSideMenu = "_AdminLetterLeftSideMenu";
+    }
+    else if (ViewBag.EntityType == SystemValues.FundingSourceTypeID)
+    {
+        leftSideMenu = "_NonDiscreLeftSideMenu";
+    }
+    else if (ViewBag.EntityType == SystemValues.FundingLetterTypeID)
+    {
+        leftSideMenu = "_FundingLetterLeftSideMenu";
+    }
+    else if (ViewBag.EntityType == SystemValues.SFFundingRequestTypeID)
+    {
+        leftSideMenu = "_SFFundingRequestLeftSideMenu";
+    }
+    else if (ViewBag.EntityType == SystemValues.RecoveryLetterTypeID)
+    {
+        leftSideMenu = "_RecoveryLetterLeftSideMenu";
+    }
+    else if (ViewBag.EntityType == SystemValues.NFBusinessCaseTypeID)
+    {
+        leftSideMenu = "_NFBusinessCaseLeftSideMenu";
+    }
+    else if (ViewBag.EntityType == SystemValues.NFProjectTypeID)
+    {
+        leftSideMenu = "_NFProjectLeftSideMenu";
+    }
+    else if (ViewBag.EntityType == SystemValues.FundingLetterReportTypeID)
+    {
+        leftSideMenu = "_FundingLetterReportLeftSideMenu";
+    }
+}
+
+@section _Inspinia_Tclhin_LeftSideNavigationMenu {
+
+    @Html.Partial(leftSideMenu, (int)ViewBag.FundingDetailID)
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2> Action </h2>
+            <ol class="breadcrumb">
+                @Html.Partial("_BreadCrumbPath", (int)ViewBag.FundingDetailID)
+                <li class="active"><strong> Action </strong></li>
+            </ol>
+        </div>
+        <div class="col-lg-2"></div>
+    </div>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>@Html.Action("ProjectStatusInfo", "CommonPartialView", new { id = (int)ViewBag.FundingDetailID })</h5>
+                        <div class="ibox-tools">
+                        </div>
+                    </div>
+
+                    <div class="ibox-content">
+
+
+                        <div id="WarnAlert" class="alert alert-warning alert-dismissible hidden" role="alert">
+                            <div><strong>Warning: </strong><span id="WarningMsg"></span></div>
+                        </div>
+
+                        <div id="ErrorAlert" class="alert alert-danger alert-dismissible hidden" role="alert">
+                            <div><strong>Error: </strong><span id="ErrorMsg"></span></div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-3"></div>
+                            @Html.Label("Action ", htmlAttributes: new { @class = "control-label col-lg-6" })
+                            <div class="col-lg-3"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-lg-3"></div>
+                                <div class="col-lg-6">
+                                    <select id="TaskID" class="form-control" , onChange="taskSelected(this)">
+                                        <option value="">Select ... </option>
+                                    </select>
+                                    @Html.TextBox("NoTask", "No Action Available", new { @id = "NoTask", @class = "form-control text-box single-line", disabled = "disabled" })
+                                    @Html.ValidationMessageFor(model => model.TaskID, "", new { @class = "text-danger", id = "ErrorMessage" })
+                                </div>
+                                <div class="col-lg-3"></div>
+                            </div>
+                        </div>
+                        <br />
+
+                        <div class="row">
+                            <div class="col-lg-3"></div>
+                            @Html.Label("From Status ", htmlAttributes: new { @class = "control-label col-lg-6" })
+                            <div class="col-lg-3"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-lg-3"></div>
+                                <div class="col-lg-6">
+                                    @Html.EditorFor(model => model.EntityStatu.StatusDescription, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                                </div>
+                                <div class="col-lg-3"></div>
+                            </div>
+                        </div>
+                        <br />
+
+                        <div class="row">
+                            <div class="col-lg-3"></div>
+                            @Html.Label("To Status ", htmlAttributes: new { @class = "control-label col-lg-6" })
+                            <div class="col-lg-3"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3"></div>
+                            <div class="form-group">
+                                <div class="col-lg-6">
+                                    @Html.TextBox("toStatus", "", new { @class = "form-control text-box single-line", disabled = "disabled" })
+                                </div>
+                                <div class="col-lg-3"></div>
+                            </div>
+                        </div>
+
+                        <br />
+
+                        <div class="row">
+                            <div class="col-lg-3"></div>
+                            @Html.Label("Comment ", htmlAttributes: new { @class = "control-label col-lg-6" })
+                            <div class="col-lg-3"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3"></div>
+                            <div class="form-group">
+                                <div class="col-lg-6">
+                                    @Html.TextAreaFor(model => model.StatusComment, new { @class = "form-control", rows = 2, style = "resize:none" })
+                                </div>
+                                <div class="col-lg-3"></div>
+                            </div>
+                        </div>
+
+                        @*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*@
+                        <br />
+                        <div id="divConfirmForSignature">
+                            <div class="row">
+                                <div class="col-lg-3"></div>
+
+                                <div class="col-lg-6">
+                                    <input type="checkbox" id="chbUploadSignDocument" name="chbUploadSignDocument" />       Select uploaded signing document from the list below if it is different from the standard template.
+                                    <br /> &nbsp; &nbsp; &nbsp;   (.docx and .pdf form supported)
+                                </div>
+                            </div>
+                            <br />
+                            <br />
+                            <div class="row" id="docTableRow">
+                                <div class="col-lg-2"></div>
+                                <div class="form-group">
+                                    <div class="col-lg-8">
+
+                                        <table id="docList" class="table table-bordered table-condensed table-hover table-striped" style="display:none">
+                                            <tr>
+                                                <th style="vertical-align:middle">Select</th>
+                                                <th> Document Name </th>
+                                                <th> Document Description</th>
+                                            </tr>
+
+                                            @foreach (DocumentViewModel item in documentList)
+                                            {
+                                                <tr>
+                                                    @*<td><input type="checkbox" value="@item.FundingDocumentID" />*@
+                                                    <td><input type="radio" id="selectedItem" name="selectedItem" value="@item.FundingDocumentID" />
+                                                    <td prop="documentName">@item.DocumentName</td>
+                                                    @*<td prop="documentTypeDescription">@item.DocumentTypeDescription</td>*@
+                                                    <td prop="doucmentDescription">@item.DoucmentDescription</td>
+                                                    @*<td prop="addedDate">@item.AddedDate</td>*@
+
+                                                    <td hidden>@Html.TextBoxFor(modelItem => item.FundingDetailID)</td>
+                                                    <td hidden>@Html.TextBoxFor(modelItem => item.FundingDocumentID)</td>
+                                                </tr>
+                                            }
+
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3"></div>
+                                <div class="col-lg-6">
+                                    @Html.SubmitButtonConfirmWithIcon(null, null, null, null, new { id = "btnConfirmForSignature" })
+                                </div>
+                                <div class="col-lg-3"></div>
+                            </div>
+                            <br />
+                            <br />
+                        </div>
+
+
+                        @*<br />
+                        <div id="divRollBackButton">
+                            <div class="row">
+                                <div class="col-lg-3"></div>
+                                <div class="col-lg-6 text-right">
+                                    <a href="@Url.Action("RollBackToDirectorReview", "Actions", new { fundingDetailId = Model.FundingDetailID })" class="btn btn-success"><i class="fa fa-backward"></i> Roll Back </a>
+                                </div>
+                                <div class="col-lg-3"></div>
+                            </div>
+                        </div>*@
+
+                        @*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*@
+
+                        <div class="row">
+                            <div class="col-lg-3"></div>
+                            <div class="col-lg-6">
+                                @Html.SubmitButtonConfirmWithIcon(null, null, null, null, new { id = "btnConfirm" })
+                            </div>
+                            <div class="col-lg-3"></div>
+                        </div>
+                        <br />
+
+                        <table class="table table-bordered table-condensed table-hover table-striped table-responsive " id="tblStatusHistory">
+                            <thead>
+                                <tr>
+                                    <th>Action Taken</th>
+                                    <th class="text-center">Date</th>
+                                    <th>User</th>
+                                    <th>Comments</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+
+                        <div class="row">
+                            @Html.HiddenFor(model => model.FundingDetailID)
+                            @Html.HiddenFor(model => model.FundingEntityStatusID)
+                            @Html.HiddenFor(model => model.TaskID)
+                            @Html.HiddenFor(model => model.StatusComment)
+                            @Html.Hidden("EditMode", 1)
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+@section Styles {
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+}
+
+@section scripts {
+    @Scripts.Render("~/plugins/jeditable")
+    @Scripts.Render("~/plugins/dataTables")
+
+    <script src="~/Scripts/HFund/AjaxLoading.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            $("#WarnAlert").toggleClass("hidden");
+            $("#ErrorAlert").toggleClass("hidden");
+            $("#btnConfirm").hide(0);
+            $("#divConfirmForSignature").hide(0);
+            $("#WarnAlert").hide(0);
+            $("#ErrorAlert").hide(0);
+            buildActionList();
+        });
+
+        function buildActionList() {
+            $("#TaskID").hide();
+            $("#NoTask").show();
+            $.ajax({
+                url: '/api/Actions/GetActionList/?FundingDetailID=' + $("#FundingDetailID").val(),
+                type: 'GET',
+                dataType: 'json',
+                processData: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data, status, xhr) {
+                    $('#TaskID').empty();
+                    $('#TaskID').append("<option value=''>" + "Select ..." + "</option>");
+                    if (data.length > 0) {
+                        for (var i = 0; i < data.length; i++) {
+                            $('#TaskID').append("<option value='" + data[i].value + "'>" + data[i].text + "</option>");
+                        }
+                        $("#TaskID").show();
+                        $("#NoTask").hide();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $("#btnConfirm").hide();
+                    $("#divConfirmForSignature").hide();
+                    $("#WarnAlert").hide();
+                    $("#ErrorAlert").show();
+                    $("#ErrorMsg").text(error);
+                }
+            });
+        }
+
+        function taskSelected(elem) {
+            if (elem.value != '') {
+                $("#toStatus").val("");
+                $.ajax({
+                    url: '/api/Actions/GetNextStatus/?FundingDetailID=' + $("#FundingDetailID").val() + '&TaskID=' + elem.value,
+                    type: 'GET',
+                    dataType: 'json',
+                    processData: false,
+                    contentType: 'application/json; charset=utf-8',
+
+                    success: function (data, status, xhr) {
+                        if (data.getStatus == 1 || data.getStatus == 3) {
+                            if (data.taskID == 135) {
+                                $("#btnConfirm").hide();
+                                $("#divConfirmForSignature").show();
+                            }
+                            else {
+                                $("#divConfirmForSignature").hide();
+                                $("#btnConfirm").show();
+                            }
+
+                            $("#toStatus").val(data.nextStatus);
+
+                            if (data.getStatus == 3) {
+                                $("#WarningMsg").text(data.message);
+                                $("#ErrorAlert").hide();
+                                $("#WarnAlert").show();
+                            } else {
+                                $("#WarnAlert").hide();
+                                $("#ErrorAlert").hide();
+                            }
+                        }
+                        else {
+                            $("#btnConfirm").hide();
+                            $("#divConfirmForSignature").hide();
+                            $("#WarnAlert").hide();
+                            $("#ErrorAlert").show();
+                            $("#ErrorMsg").text(data.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        $("#btnConfirm").hide();
+                        $("#divConfirmForSignature").hide();
+                        $("#WarnAlert").hide();
+                        $("#ErrorAlert").show();
+                        $("#ErrorMsg").text(error);
+                    }
+                });
+            } else {
+                $("#btnConfirm").hide();
+                $("#divConfirmForSignature").hide();
+                $("#toStatus").val('');
+            }
+        }
+
+        $("#btnConfirm").click(function (e) {
+            e.preventDefault();
+            $("#btnConfirm").hide();
+            $.ajax({
+                url: '/api/Actions/ConfirmAction/',
+                type: 'POST',
+                data: JSON.stringify({ FundingDetailID: $("#FundingDetailID").val(), TaskID: $("#TaskID").val(), StatusComment: $("#StatusComment").val() }),
+                dataType: 'json',
+                processData: false,
+                contentType: 'application/json; charset=utf-8',
+
+                success: function (data, status, xhr) {
+                    if (data.getStatus == 1 || data.getStatus == 3) {
+                        $("#btnConfirm").hide();
+
+                        if (data.getStatus == 3) {
+                            $("#WarningMsg").text(data.message);
+                            $("#ErrorAlert").hide();
+                            $("#WarnAlert").show();
+                            //$("#WarnAlert").fadeOut(3500);
+                            setTimeout(function () {
+                                formSubmitting = true;
+                                window.location.href = data.redirectURL;
+                            }, 3000);
+                        } else {
+                            formSubmitting = true;
+                            window.location.href = data.redirectURL;
+                        }
+                    }
+                    else {
+                        $("#btnConfirm").show();
+                        $("#WarnAlert").hide();
+                        $("#ErrorAlert").show();
+                        $("#ErrorMsg").text(data.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $("#WarnAlert").hide();
+                    $("#ErrorAlert").show();
+                    $("#ErrorMsg").text(error);
+                }
+            });
+        })
+
+
+        $("#btnConfirmForSignature").click(function (e) {
+
+            /*var documentObj = $("input:checkbox:checked", "#docList").map(function () {*/
+            var documentObj = $("input:radio:checked", "#docList").map(function () {
+                return $(this).val();
+            }).get();//.join(',');
+
+            if ($("#chbUploadSignDocument").is(":checked") && documentObj.length == 0) {
+                $("#WarningMsg").text("Please select documents for signing request.");
+                $("#WarnAlert").show();
+                return false;
+            }
+
+            e.preventDefault();
+            $("#divConfirmForSignature").hide();
+
+            $.ajax({
+                url: '/api/Actions/ConfirmActionForSignature/',
+                type: 'POST',
+                data: JSON.stringify({ FundingDetailID: $("#FundingDetailID").val(), TaskID: $("#TaskID").val(), StatusComment: $("#StatusComment").val(), CheckedUpload: $("#chbUploadSignDocument").prop("checked") ? true : false, DocumentIds: documentObj }),
+                dataType: 'json',
+                processData: false,
+                contentType: 'application/json; charset=utf-8',
+
+                success: function (data, status, xhr) {
+                    if (data.getStatus == 1 || data.getStatus == 3) {
+                        $("#divConfirmForSignature").hide();
+
+                        if (data.getStatus == 3) {
+                            $("#WarningMsg").text(data.message);
+                            $("#ErrorAlert").hide();
+                            $("#WarnAlert").show();
+                            setTimeout(function () {
+                                formSubmitting = true;
+                                window.location.href = data.redirectURL;
+                            }, 3000);
+                        } else {
+                            formSubmitting = true;
+                            window.location.href = data.redirectURL;
+                        }
+                    }
+                    else {
+                        $("#divConfirmForSignature").show();
+                        $("#WarnAlert").hide();
+                        $("#ErrorAlert").show();
+                        $("#ErrorMsg").text(data.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $("#WarnAlert").hide();
+                    $("#ErrorAlert").show();
+                    $("#ErrorMsg").text(error);
+                }
+            });
+        })
+
+        var statusList = [];
+
+        $(document).ready(function () {
+
+            $.ajax({
+                type: 'Get',
+                url: '/api/StatusHistory/GetStatusHistory/' + $("#FundingDetailID").val(),
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                success: function (data, status, xhr) {
+                    var noLines = data.length;
+                    statusList = new Array(noLines);
+                    for (var i = 0; i < noLines; i++) {
+                        statusList[i] = new Array(3);
+                    }
+                    for (var i = 0; i < data.length; i++) {
+                        statusList[i][0] = data[i].taskDescription
+                        statusList[i][1] = data[i].statusUpdatedDate
+                        statusList[i][2] = data[i].userFullName
+                        statusList[i][3] = data[i].statusComment
+                    }
+
+                    $('#tblStatusHistory').dataTable({
+                        "aaData": statusList,
+                        "aaSorting": [],
+                        "lengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
+                        "columnDefs": [{ "sClass": "text-center", "targets": [1] }],
+                        bDestroy: true
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    var err = eval("(" + xhr.responseText + ")");
+                    $("#targetMessage").html(err.message);
+                    $("#targetMessage").addClass("text-danger");
+
+                }
+            });
+        });
+
+        $("#chbUploadSignDocument").click(function (e) {
+            $("#docList").toggle(this.checked);
+        });
+
+    </script>
+
+}

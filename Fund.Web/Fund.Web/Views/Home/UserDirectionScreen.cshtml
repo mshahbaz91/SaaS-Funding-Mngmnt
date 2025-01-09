@@ -1,0 +1,139 @@
+﻿
+@model IEnumerable<HFund.Data.Models.UserProfile>
+
+@{
+    Layout = null;
+    int _itemCounter = 0;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title> @HFund.Utility.ServerConfiguration.CorporateName | User Direction Screen</title>
+
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet">
+    <link href="~/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="~/Content/animate.css" rel="stylesheet">
+    <link href="~/Content/style.css" rel="stylesheet">
+    <style>
+        .logoBgColor {
+            background-color: #1ab394;
+        }
+    </style>
+    <script language="javascript">
+
+        function DisableButton(b) {
+            b.disabled = true;
+            b.form.submit();
+        }
+
+    </script>
+</head>
+
+<body class="gray-bg">
+
+    @using (Html.BeginForm(new { ReturnUrl = ViewBag.ReturnUrl }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="middle-box  loginscreen  animated fadeInDown">
+
+            <div>
+
+                <div class="logoBgColor">
+                    <br />
+                    &nbsp;&nbsp;
+
+                    <img src="~/Images/TCLHIN_Logo.png" alt="logo" />
+                    <br />
+                    &nbsp; &nbsp;
+                    <br />
+                </div>
+
+                <div> &nbsp; </div>
+
+                <div>
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                </div>
+
+                @if ((bool)ViewBag.UserProfileFound == false)
+                {
+                    <br />
+                    <p>
+                        Not User Profile Associated ... 
+                    </p>
+
+                    <br/>
+                    <small> @Html.ActionLink("Log Out ", "SignOut")</small>
+                }
+                else
+                {
+                    <br />
+                    <table class="table table-bordered table-condensed table-hover table-striped  ">
+                      
+                        @foreach (var item in Model)
+                        {
+                            _itemCounter++;
+
+                            <tr>
+                                <td>
+                                    @if (_itemCounter == 1)
+                                    {
+                                        <input type="radio" name="UserProfileId" value="@item.UserProfileID" checked />
+                                    }
+                                    else
+                                    {
+                                        <input type="radio" name="UserProfileId" value="@item.UserProfileID" />
+                                    }
+                                   
+                                </td>
+                              
+                                <td> 
+                                    @if ( item.Organization.HasValue )
+                                    {
+                                        <span>@item.Account.Name </span>
+                                    }
+                                    else
+                                    {
+                                        <span>TCLHIN</span>
+                                    }
+                                </td>
+                            </tr>
+
+                         
+                      }
+
+                    </table>
+
+
+                    <p>
+                        <small>
+                            please click on the radio button to indicate which organization to work on , then click the Continue button .
+                        </small>
+                    </p>
+
+                    <br />
+                    <button type="submit" class="btn btn-primary block full-width m-b" id="btnSignIn" name="btnSignIn" onclick="DisableButton(this)">continue</button>
+
+                    <br />
+                    <small> @Html.ActionLink("Log Out ", "SignOut")</small>
+                }
+
+
+              
+            </div>
+
+        </div>
+
+    }
+
+</body>
+
+</html>
+
+

@@ -1,0 +1,27 @@
+﻿@using HFund.Repository;
+@model HFund.Data.ViewModels.SelectEntityEditorVM
+
+<tr>
+@*    <td>@Html.DisplayFor(model => model.EntityID)  </td>*@
+    <td>
+        @if (!string.IsNullOrEmpty(Model.EntityID))
+        {
+            if (Model.FundingEntityTypeID == SystemValues.BusinessCaseTypeID) { <a href="/BusinessCase/Edit/@Model.FundingDetailID" target="_blank" title='@Model.EntityID'>@Model.EntityID</a> }
+            if (Model.FundingEntityTypeID == SystemValues.NFBusinessCaseTypeID) { <a href="/NFBusinessCase/Edit/@Model.FundingDetailID" target="_blank" title='@Model.EntityID'>@Model.EntityID</a> }
+            if (Model.FundingEntityTypeID == SystemValues.SFFundingRequestTypeID) { <a href="/SFFundingRequest/Edit/@Model.FundingDetailID" target="_blank" title='@Model.EntityID'>@Model.EntityID</a> }
+        }
+    </td>
+    <td>@Html.DisplayFor(model=> model.EntityName) </td>
+    <td class="col-lg-3">@Html.DisplayFor(model => model.HSP) </td>
+    <td style="text-align:center">@Html.DisplayFor(model => model.FiscalYear)</td>
+    <td style="text-align:center">@Html.DisplayFor(model => model.Quarter)</td>
+    <td style="text-align:center">@Html.DisplayFor(model => model.LHINLeadName)</td>
+    <td style="text-align:center">@Html.DisplayFor(model => model.SMTDirectorName)</td>
+    <td style="text-align:center">@String.Format("{0:d}", Model.EntityDate) </td>
+    <td style="text-align:center">
+        @Html.CheckBoxFor(model => model.Selected)
+        @Html.HiddenFor(model => model.FundingDetailID)
+    </td>
+</tr>
+
+

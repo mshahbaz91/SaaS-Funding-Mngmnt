@@ -1,0 +1,65 @@
+﻿@model IEnumerable<HFund.Data.Models.Activity>
+@using HFund.Data.Models
+
+
+@{
+    ViewBag.Title = "Planned_Details";
+    Layout = "~/Views/Shared/_TCLHINLayout.cshtml";
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-lg-2">
+            @Html.Partial("_ProjectQuarterlyReportLeftSideMenu")
+        </div>
+
+        <div class="col-lg-10">
+            <div class="form-horizontal">
+                <h4> Activities Planned  </h4>
+                @Html.Action("ProjectStatusInfo", "CommonPartialView", new { id = (int)ViewBag.FundingDetailID })
+                <hr />
+                <div class="row"><span style="color:green">@ViewBag.Message </span></div>
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @if (TempData["Success"] != null)
+                {
+                    <div class="red">
+                        <p style="color:green;"> @TempData["Success"].ToString()</p>
+                    </div>
+                }
+
+                <table class="table table-bordered table-condensed table-hover table-striped table-responsive ">
+                    <tr>
+                        <th> Activity Sequence Number </th>
+                        <th> Activity Description </th>
+                        <th colspan="2">@Html.ActionLink("Add New", "Planned_Create", new { id = (int)ViewBag.FundingDetailID }, new { @class = "btn btn-success" })  </th>
+
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td> @Html.DisplayFor(modelItem => item.ActivitySeqNo)  </td>
+                            <td> @Html.DisplayFor(modelItem => item.ActivityDescription)  </td>
+
+                            <td>@Html.ActionLink("Edit", "Planned_Edit", new { id = item.ActivityID }, new { @class = "btn btn-info" })</td>
+                            <td>@Html.ActionLink("Delete", "Planned_Delete", new { id = item.ActivityID }, new { @class = "btn btn-danger" })</td>
+                        </tr>
+
+
+                    }
+
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+}

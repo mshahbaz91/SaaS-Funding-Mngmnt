@@ -1,0 +1,455 @@
+﻿@model IEnumerable<HFund.Data.Models.Activity>
+@using HFund.Data.Models
+@using HFund.Data.ViewModels
+@using HFund.Utility
+@using HFund.Repository
+
+
+@{
+    ViewBag.Title = "Project Quarterly Report -> Activity -> Details";
+
+    Layout = "~/Views/Shared/_TCLHINLayout.cshtml";
+
+    var _ActivityCompleted = Model.Where(c => c.PlannedCompletedInd == true).OrderBy(c => c.ActivitySeqNo);
+
+    var _ActivityPlanned = Model.Where(c => c.PlannedCompletedInd == false).OrderBy(c => c.ActivitySeqNo);
+
+    int _rowIndex = 0;
+    string _rowIdPrefixStr = "rowId_";
+    string _primaryIdPrefixStr = "primaryId_";
+    string _activityDescriptionTextAreaIdPrefixStr = "activityDescriptionTextAreaId_";
+    string _sequenceNumberSpanIdPrefixStr = "sequenceNumberSpanId_";
+    string _completedCheckboxIdPrefixStr = "completedCheckBoxId_";
+    string _txtAreaClassPrefixStr = "txtAreaClass";
+
+   // BusinessCaseBreadCrumbVM _breadCrumb = ViewBag.BusinessCaseBreadCrumbVM;
+
+}
+
+
+@section _Inspinia_Tclhin_LeftSideNavigationMenu {
+
+    @Html.Partial("_ProjectQuarterlyReportLeftSideMenu", (int)ViewBag.FundingDetailID)
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2> Activity  </h2>
+            <ol class="breadcrumb">
+
+                @Html.Partial("_BreadCrumbPath", (int)ViewBag.FundingDetailID)
+
+                <li class="active">
+                    <strong>Activity</strong>
+                </li>
+
+            </ol>
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+    </div>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>@Html.Action("ProjectStatusInfo", "CommonPartialView", new { id = (int)ViewBag.FundingDetailID })</h5>
+                        <div class="ibox-tools">
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h4>
+                                    <span id="targetMessage">
+                                    </span>
+                                </h4>
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <input type="hidden" id="FundingDetailId" value="@ViewBag.FundingDetailID" />
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12">
+
+                                <div class="pull-right">
+                                   
+                                    <a href="javascript:void(0)" onclick="SaveChanges()" class="btn btn-primary" title="Save All"> <i class="fa fa-save"> </i> Save  </a>
+                                   
+                                    @Html.NextLinkButtonwithIcon(null, "DeliverableProgress", "Details", (int)ViewBag.FundingDetailID, null, "Go to Deliverable", null, null)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover" id="ActivityTB">
+                                <thead>
+                                    <tr>
+                                        <th class="col-lg-1"> Sequence Number </th>
+                                        <th> Activity Description </th>
+                                        <th class="col-lg-1"> Completed </th>
+                                       
+                                        <th class="col-lg-1">
+                                        </th>
+                                        
+                                    </tr>
+                                </thead>
+
+                                <tbody id="ActivityTBBody">
+
+                                    @foreach (var item in Model)
+                                    {
+                                        _rowIndex++;
+
+                                        string _rowId = _rowIdPrefixStr + _rowIndex;
+                                        string _primaryId = _primaryIdPrefixStr + _rowIndex;
+
+                                        string _activityDescriptionTextAreaId = _activityDescriptionTextAreaIdPrefixStr + _rowIndex;
+                                        string _sequenceNumberSpanId = _sequenceNumberSpanIdPrefixStr + _rowIndex;
+                                        string _completedCheckboxId = _completedCheckboxIdPrefixStr + _rowIndex;
+
+                                        string _txtAreaClass = _txtAreaClassPrefixStr;
+
+
+                                        <tr id="@_rowId">
+                                            <td align="center" valign="middle" style="vertical-align:middle">
+                                                <span id="@_sequenceNumberSpanId">@_rowIndex</span>
+                                            </td>
+
+                                            <td>
+                                                <textarea id="@_activityDescriptionTextAreaId" class="form-control @_txtAreaClass"> @item.ActivityDescription </textarea>
+                                            </td>
+
+                                            <td align="center" valign="middle" style="vertical-align:middle">
+
+                                                @if (item.PlannedCompletedInd)
+                                                {
+                                                    <input type="checkbox" id="@_completedCheckboxId" checked />
+                                                }
+                                                else
+                                                {
+                                                    <input type="checkbox" id="@_completedCheckboxId" />
+                                                }
+                                            </td>
+
+                                            <td align="center" valign="middle" style="vertical-align:middle">
+                                                <input type="hidden" id="@_primaryId" value="@item.ActivityID" />
+                                                <button class="btn btn-warning dim " type="button" onclick="LineItemDelete(@_rowIndex)" title="Delete record"><i class="fa fa-trash"></i></button>
+                                            </td>
+                                          
+
+                                        </tr>
+                                    }
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="pull-left">
+
+                                  
+                                        <button type="button" class="btn btn-primary dim" onclick="AddNew()" title="Add new record">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                 
+                                </div>
+
+                                <div class="pull-right">
+                                  
+                                    <a href="javascript:void(0)" onclick="SaveChanges()" class="btn btn-primary" title="Save All"> <i class="fa fa-save"> </i> Save  </a>
+                                 
+                                    @Html.NextLinkButtonwithIcon(null, "DeliverableProgress", "Details", (int)ViewBag.FundingDetailID, null, "Go to Deliverable", null, null)
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+   
+
+
+}
+
+
+        @section Styles {
+
+            @Styles.Render("~/plugins/dataPickerStyles")
+            @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+        }
+
+
+        @section Scripts {
+
+            @Scripts.Render("~/plugins/dataPicker")
+            @Scripts.Render("~/plugins/iCheck")
+
+            <script type="text/javascript">
+
+                var _primaryId_Prefix = "@_primaryIdPrefixStr";
+                var _rowId_Prefix = "@_rowIdPrefixStr";
+                var _activityDescriptionTextAreaIdPrefixStr = "@_activityDescriptionTextAreaIdPrefixStr";
+                var _sequenceNumberSpanIdPrefixStr = "@_sequenceNumberSpanIdPrefixStr";
+                var _completedCheckboxIdPrefixStr = "@_completedCheckboxIdPrefixStr";
+                var _txtAreaClass = "@_txtAreaClassPrefixStr";
+
+
+                function SetTextAreaNoResize() {
+                    $("." + _txtAreaClass).css('resize', 'none');
+                }
+
+                function ClearMessage() {
+                    $("#targetMessage").text('');
+                    $("#targetMessage").removeClass("text-danger");
+                    $("#targetMessage").removeClass("text-info");
+                    $("#targetMessage").removeClass("text-primary");
+                    $("#targetMessage").removeClass("text-success");
+                }
+
+
+                function LineItemDelete(rowId) {
+                    var _rowId = _rowId_Prefix + rowId;
+                    $("#" + _rowId).remove();
+
+                    ReSortSequenceNumber();
+                }
+
+
+                function ReSortSequenceNumber() {
+                    var _rowIndex = 0;
+                    $("#ActivityTB > tbody > tr ").each(function (index, value) {
+                        _rowIndex++;
+                        var $currentRow = $(this);
+                        var rowIdStr = $currentRow.attr("id");
+                        var strArray = rowIdStr.split("_");
+                        var _rowId = strArray[1];
+
+                        var _sequenceNumberSpanId = _sequenceNumberSpanIdPrefixStr + _rowId;
+                        $("#" + _sequenceNumberSpanId).text(_rowIndex);
+
+                    });
+
+                }
+
+
+
+                function RemoveEmptyRow() {
+                    $("#ActivityTB > tbody > tr ").each(function (index, value) {
+
+                        var $currentRow = $(this);
+                        var rowIdStr = $currentRow.attr("id");
+                        var strArray = rowIdStr.split("_");
+                        var _rowId = strArray[1];
+                        // get rowId = "rowId_2"
+
+                        var _primaryId = _primaryId_Prefix + _rowId;
+                        var _activityDescriptionTextAreaId = _activityDescriptionTextAreaIdPrefixStr + _rowId;
+                        var _completedCheckboxId = _completedCheckboxIdPrefixStr + _rowId;
+
+                        var _activityDescriptionTextAreaId_Value = $("#" + _activityDescriptionTextAreaId).val();
+                        var _completedCheckboxId_value = $("#" + _completedCheckboxId).is(':checked');
+
+                        var _activityDescriptionIsEmpty = false;
+                        _activityDescriptionIsEmpty = tclhinIsEmptyField(_activityDescriptionTextAreaId_Value);
+
+
+                        if (_activityDescriptionIsEmpty == true && _completedCheckboxId_value == false) {
+                            LineItemDelete(_rowId)
+                        }
+
+                    });
+
+                }
+
+
+                function SaveChanges() {
+
+                    ClearMessage();
+
+                    RemoveEmptyRow();
+
+                    var hasValidationError = false;
+
+                    var activityList = {};
+
+                    var totalRow = $("#ActivityTB > tbody > tr").length;
+
+                    activityList = new Array(totalRow);
+
+                    var arrayIndex = 0;
+                    var hasValidationError = false;
+                    var _fundingDetailId_Value = $("#FundingDetailId").val();
+
+                    $("#ActivityTB > tbody > tr ").each(function (index, value) {
+
+                        var $currentRow = $(this);
+                        var rowIdStr = $currentRow.attr("id");
+                        var strArray = rowIdStr.split("_");
+                        var _rowId = strArray[1];
+                        // get rowId = "rowId_2"
+
+                        var _primaryId = _primaryId_Prefix + _rowId;
+
+                        var _activityDescriptionTextAreaId = _activityDescriptionTextAreaIdPrefixStr + _rowId;
+                        var _completedCheckboxId = _completedCheckboxIdPrefixStr + _rowId;
+                        var _primaryId_Value = $("#" + _primaryId).val();
+
+                        var _activityDescriptionTextAreaId_Value = $("#" + _activityDescriptionTextAreaId).val();
+                        var _completedCheckboxId_Value = $("#" + _completedCheckboxId).is(':checked');
+
+                        var Activity = {
+                            ActivityID: _primaryId_Value,
+                            FundingDetailID: _fundingDetailId_Value,
+                            ActivityDescription: _activityDescriptionTextAreaId_Value,
+                            PlannedCompletedInd: _completedCheckboxId_Value
+                        }
+
+                        activityList[arrayIndex] = Activity;
+                        arrayIndex++;
+                    });
+
+
+                    // no records
+                    if (activityList.length < 1) {
+                        $.ajax({
+                            url: '/api/ActivityApi/QuarterlyProjectReport_DeleteRows_ByFundingDetailId/',
+                            type: 'POST',
+                            data: JSON.stringify({ fundingDetailId: _fundingDetailId_Value }),
+                            dataType: 'json',
+                            processData: false,
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (data, status, xhr) {
+                                $("#targetMessage").html(data.message);
+                                $("#targetMessage").addClass("text-info");
+                                //setTimeout(function () {
+                                //    location.reload(true);
+                                //}, 5000);
+                            },
+                            error: function (xhr, status, error) {
+                                var err = eval("(" + xhr.responseText + ")");
+                                $("#targetMessage").html(err.message);
+                                $("#targetMessage").addClass("text-danger");
+                            }
+                        });
+                    }
+                    else {
+                        // means it has some records // prepare ajax post
+                        $.ajax({
+                            url: '/api/ActivityApi/QuarterlyProjectReport_Details_SaveChanges/',
+                            type: 'POST',
+                            data: JSON.stringify(activityList),
+                            dataType: 'json',
+                            processData: false,
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (data, status, xhr) {
+                                $("#targetMessage").html(data.message);
+                                $("#targetMessage").addClass("text-info");
+                                //setTimeout(function () {
+                                //    location.reload(true);
+                                //}, 5000);
+                            },
+                            error: function (xhr, status, error) {
+                                var err = eval("(" + xhr.responseText + ")");
+                                $("#targetMessage").html(err.message);
+                                $("#targetMessage").addClass("text-danger");
+                            }
+
+                        });
+                    }
+
+                }
+
+
+                function AddNew() {
+
+                    var totalRow = $("#ActivityTB > tbody > tr").length;
+                    var nextRowNumber = totalRow + 1;
+                    var nextSeqNo = 0; // not row number
+                    if (totalRow == 0) {
+                        nextRowNumber = 1;
+                        nextSeqNo = 1;
+                    } else {
+                        var $lastRow = $("#ActivityTB > tbody > tr:last");
+                        var rowIdStr = $lastRow.attr("id");
+                        var strArray = rowIdStr.split("_");
+                        var _rowId = parseInt(strArray[1]);
+                        nextRowNumber = _rowId + 1;
+                        var _lastSequenceNumberSpanId = _sequenceNumberSpanIdPrefixStr + _rowId;
+                        var _lastSeqNo = parseInt($("#" + _lastSequenceNumberSpanId).text());
+                        // console.log(_lastSeqNo);
+                        nextSeqNo = _lastSeqNo + 1;
+                    }
+
+                    // console.log(nextRowNumber);
+
+                    var _primaryId = _primaryId_Prefix + nextRowNumber;
+                    var _rowId = _rowId_Prefix + nextRowNumber;
+
+                    var _activityDescriptionTextAreaId = _activityDescriptionTextAreaIdPrefixStr + nextRowNumber;
+                    var _sequenceNumberSpanId = _sequenceNumberSpanIdPrefixStr + nextRowNumber;
+                    var _completedCheckboxId = _completedCheckboxIdPrefixStr + nextRowNumber;
+
+
+                    $("#ActivityTB").append(
+                        '<tr id="' + _rowId + '"' + ' > ' +
+                              '<td align="center" valign="middle" style="vertical-align:middle" >' +
+                                   '<span id="' + _sequenceNumberSpanId + '" >' + nextSeqNo +
+                                   '</span> ' +
+                               '</td>' +
+
+                                '<td>  ' +
+                                       ' <textarea id="' + _activityDescriptionTextAreaId + '"' + 'class="form-control ' + _txtAreaClass + ' "' + ' > </textarea>' +
+                                '</td> ' +
+
+                                '<td align="center" valign="middle" style="vertical-align:middle" >' +
+
+                                       ' <input type="checkbox"  id="' + _completedCheckboxId + '"' + ' /> ' +
+                               '</td>' +
+
+
+                                '<td align="center" valign="middle" style="vertical-align:middle">' +
+                                 '<button type="button" class="btn btn-warning dim" title="Delete record" onclick="LineItemDelete(' + nextRowNumber + ')"' + ' > <i class="fa fa-trash"></i> </button>' +
+                                 '<input type="hidden" id="' + _primaryId + '"' + 'value="0" />' +
+                                '</td>' +
+                        '</tr>');
+
+                    SetTextAreaNoResize();
+
+                }
+
+
+                $(document).ready(function () {
+
+                    SetTextAreaNoResize();
+
+                });
+
+            </script>
+
+
+        }
+
+
+

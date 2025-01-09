@@ -1,0 +1,449 @@
+﻿@model IEnumerable<HFund.Data.Models.AdditionalRequirement>
+@using HFund.Data.Models
+@using HFund.Data.ViewModels
+@using HFund.Repository
+@using HFund.Utility
+
+@{
+    ViewBag.Title = "Project Charter -> Additional Requirement -> Details";
+    Layout = "~/Views/Shared/_TCLHINLayout.cshtml";
+    int _ProjectCharterStatusID = ViewBag.ProjectCharterStatusID;
+
+    int _rowIndex = 0;
+    string _rowIdPrefixStr = "rowId_";
+    string _primaryIdPrefixStr = "primaryId_";
+    string _requirementTextAreaIdPrefixStr = "requirementTextAreaId_";
+    string _descriptionTextAreaIdPrefixStr = "descriptionTextAreaId_";
+    string _txtAreaClassPrefixStr = "txtAreaClass";
+   // BusinessCaseBreadCrumbVM _breadCrumb = ViewBag.BusinessCaseBreadCrumbVM;
+
+}
+
+
+@section _Inspinia_Tclhin_LeftSideNavigationMenu {
+
+    @Html.Partial("_ProjectCharterLeftSideMenu", (int)ViewBag.FundingDetailID)
+}
+
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-12">
+            <h2> Additional Requirement  </h2>
+            <ol class="breadcrumb">
+
+                @Html.Partial("_BreadCrumbPath", (int)ViewBag.FundingDetailID)
+
+                <li class="active">
+                    <strong>Additional Requirement</strong>
+                </li>
+
+            </ol>
+        </div>
+       
+    </div>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>@Html.Action("ProjectStatusInfo", "CommonPartialView", new { id = (int)ViewBag.FundingDetailID })</h5>
+                        <div class="ibox-tools">
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h4>
+                                    <span id="targetMessage">
+                                    </span>
+                                </h4>
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <input type="hidden" id="FundingDetailId" value="@ViewBag.FundingDetailID" />
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12">
+
+                                <div class="pull-right">
+                                   @if (_ProjectCharterStatusID != SystemValues.CharterApprovedStatus)
+                                   {
+                                        <a href="javascript:void(0)" onclick="SaveChanges()" class="btn btn-primary" title="Save All"> <i class="fa fa-save"> </i> Save  </a>
+                                    }
+
+                                   @if( (int)ViewBag.ProjectFundingEntityTypeID == SystemValues.NFProjectTypeID)
+                                   {
+                                     @Html.NextLinkButtonwithIcon(null, "ResourceBudget", "Details", (int)ViewBag.FundingDetailID, null, "Go to Resource Budget", null, null)
+                                   }
+                                   else
+                                   {
+                                     @Html.NextLinkButtonwithIcon(null, "ProjectCharter", "BudgetExpense_Details", (int)ViewBag.FundingDetailID, null, "Go to Budget Expense", null, null)
+                                   }
+                                  
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover" id="AdditionalRequirementTB">
+                                <thead>
+                                    <tr>
+                                        <th>Requirement</th>
+                                        <th>Description</th>
+                                       @if (_ProjectCharterStatusID != SystemValues.CharterApprovedStatus)
+                                       {
+                                            <th class="col-lg-1">
+
+                                            </th>
+                                        }
+                                    </tr>
+                                </thead>
+
+                                <tbody id="AdditionalRequirementTBBody">
+
+                                    @foreach (var item in Model)
+                                    {
+                                        _rowIndex++;
+
+                                        string _rowId = _rowIdPrefixStr + _rowIndex;
+                                        string _primaryId = _primaryIdPrefixStr + _rowIndex;
+
+                                        string _requirementTextAreaId = _requirementTextAreaIdPrefixStr + _rowIndex;
+                                        string _descriptionTextAreaId = _descriptionTextAreaIdPrefixStr + _rowIndex;
+                                        string _txtAreaClass = _txtAreaClassPrefixStr;
+
+
+
+                                        <tr id="@_rowId">
+                                            <td>
+                                                <textarea id="@_requirementTextAreaId" class="form-control @_txtAreaClass">@item.Requirement</textarea>
+                                            </td>
+
+                                            <td>
+                                                <textarea id="@_descriptionTextAreaId" class="form-control @_txtAreaClass">@item.Description</textarea>
+                                            </td>
+
+
+                                           @if (_ProjectCharterStatusID != SystemValues.CharterApprovedStatus)
+                                           {
+
+                                                <td align="center" valign="middle" style="vertical-align:middle">
+                                                    <input type="hidden" id="@_primaryId" value="@item.AdditionalRequirementID" />
+                                                    <button class="btn btn-warning dim" type="button" onclick="LineItemDelete(@_rowIndex)" title="Delete record"><i class="fa fa-trash"></i></button>
+                                                </td>
+                                            }
+                                        </tr>
+
+                                    }
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="pull-left">
+
+                                   @if (_ProjectCharterStatusID != SystemValues.CharterApprovedStatus)
+                                   {
+                                        <button type="button" class="btn btn-primary dim" onclick="AddNew()" title="Add new record">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    }
+                                </div>
+
+                                <div class="pull-right">
+                                   @if (_ProjectCharterStatusID != SystemValues.CharterApprovedStatus)
+                                   {
+                                        <a href="javascript:void(0)" onclick="SaveChanges()" class="btn btn-primary" title="Save All"> <i class="fa fa-save"> </i> Save  </a>
+                                    }
+
+                                    @if ((int)ViewBag.ProjectFundingEntityTypeID == SystemValues.NFProjectTypeID)
+                                    {
+                                        @Html.NextLinkButtonwithIcon(null, "ResourceBudget", "Details", (int)ViewBag.FundingDetailID, null, "Go to Resource Budget", null, null)
+                                    }
+                                    else
+                                    {
+                                        @Html.NextLinkButtonwithIcon(null, "ProjectCharter", "BudgetExpense_Details", (int)ViewBag.FundingDetailID, null, "Go to Budget Expense", null, null)
+                                    }
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+}
+
+
+
+@section scripts {
+
+
+ 
+<script type="text/javascript">
+
+        var _primaryId_Prefix = "@_primaryIdPrefixStr";
+        var _rowId_Prefix = "@_rowIdPrefixStr";
+        var _requirementTextAreaIdPrefixStr = "@_requirementTextAreaIdPrefixStr";
+        var _descriptionTextAreaIdPrefixStr = "@_descriptionTextAreaIdPrefixStr";
+        var _txtAreaClass = "@_txtAreaClassPrefixStr";
+
+        function SetTextAreaNoResize() {
+            $("." + _txtAreaClass).css('resize', 'none');
+        }
+
+
+        function ClearMessage() {
+            $("#targetMessage").text('');
+            $("#targetMessage").removeClass("text-danger");
+            $("#targetMessage").removeClass("text-info");
+            $("#targetMessage").removeClass("text-primary");
+            $("#targetMessage").removeClass("text-success");
+        }
+
+
+        function LineItemDelete(rowId) {
+            var _rowId = _rowId_Prefix + rowId;
+            $("#" + _rowId).remove();
+
+        }
+
+
+        function RemoveEmptyRow() {
+
+            $("#AdditionalRequirementTB > tbody > tr ").each(function (index, value) {
+
+                var $currentRow = $(this);
+                var rowIdStr = $currentRow.attr("id");
+                var strArray = rowIdStr.split("_");
+                var _rowId = strArray[1];
+                // get rowId = "rowId_2"
+
+                var _primaryId = _primaryId_Prefix + _rowId;
+                var _requirementTextAreaId = _requirementTextAreaIdPrefixStr + _rowId;
+                var _descriptionTextAreaId = _descriptionTextAreaIdPrefixStr + _rowId;
+
+                var _requirementTextAreaId_Value = $("#" + _requirementTextAreaId).val();
+                var _descriptionTextAreaId_Value = $("#" + _descriptionTextAreaId).val();
+
+                var _requiremenIsEmpty = false;
+                _requiremenIsEmpty = tclhinIsEmptyField(_requirementTextAreaId_Value);
+
+                var _descriptionIsEmpty = false;
+                _descriptionIsEmpty = tclhinIsEmptyField(_descriptionTextAreaId_Value);
+
+                if (_requiremenIsEmpty == true && _descriptionIsEmpty == true)
+                {
+                    LineItemDelete(_rowId)
+                }
+
+            });
+
+        }
+
+
+        function SaveChanges() {
+
+            ClearMessage();
+
+            RemoveEmptyRow();
+
+            var hasValidationError = false;
+
+            var additionalRequirementList = {};
+
+            var totalRow = $("#AdditionalRequirementTB > tbody > tr").length;
+
+            additionalRequirementList = new Array(totalRow);
+
+            var arrayIndex = 0;
+            var hasValidationError = false;
+            var _fundingDetailId_Value = $("#FundingDetailId").val();
+
+            $("#AdditionalRequirementTB > tbody > tr ").each(function (index, value) {
+
+                var $currentRow = $(this);
+                var rowIdStr = $currentRow.attr("id");
+                var strArray = rowIdStr.split("_");
+                var _rowId = strArray[1];
+                // get rowId = "rowId_2"
+
+                var _primaryId = _primaryId_Prefix + _rowId;
+
+                var _requirementTextAreaId = _requirementTextAreaIdPrefixStr + _rowId;
+                var _descriptionTextAreaId = _descriptionTextAreaIdPrefixStr + _rowId;
+
+                var _primaryId_Value = $("#" + _primaryId).val();
+                var _requirementTextAreaId_Value = $("#" + _requirementTextAreaId).val();
+                var _descriptionTextAreaId_Value = $("#" + _descriptionTextAreaId).val();
+
+                // valiation on requirement 150
+                var _requirementIsExceedMax = false;
+                _requirementIsExceedMax = tclhinIsExceedMaxLength(_requirementTextAreaId_Value, 150);
+
+               // console.log(_requirementTextAreaId_Value.length);
+               // console.log(_requirementIsExceedMax);
+
+                if (_requirementIsExceedMax == true) {
+
+                    $("#" + _requirementTextAreaId).css('border-color', 'red');
+                    $("#targetMessage").text('Max Length 150 ...');
+                    $("#targetMessage").addClass("text-danger");
+                    hasValidationError = true;
+                }
+                else
+                {
+                    $("#" + _requirementTextAreaId).css('border-color', '');
+                }
+
+
+                var AdditionalRequirement = {
+                    AdditionalRequirementID: _primaryId_Value,
+                    FundingDetailID: _fundingDetailId_Value,
+                    Requirement: _requirementTextAreaId_Value,
+                    Description: _descriptionTextAreaId_Value
+                }
+
+                additionalRequirementList[arrayIndex] = AdditionalRequirement;
+                arrayIndex++;
+
+            });
+
+            if (hasValidationError == true) {
+                return;
+            }
+
+            // no records
+            if (additionalRequirementList.length < 1)
+            {
+                $.ajax({
+                    url: '/api/AdditionalRequirementApi/ProjectCharter_DeleteRows_ByFundingDetailId/',
+                    type: 'POST',
+                    data: JSON.stringify({ fundingDetailId: _fundingDetailId_Value }),
+                    dataType: 'json',
+                    processData: false,
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data, status, xhr) {
+                        $("#targetMessage").html(data.message);
+                        $("#targetMessage").addClass("text-info");
+                        //setTimeout(function () {
+                        //    location.reload(true);
+                        //}, 5000);
+                    },
+                    error: function (xhr, status, error) {
+                        var err = eval("(" + xhr.responseText + ")");
+                        $("#targetMessage").html(err.message);
+                        $("#targetMessage").addClass("text-danger");
+                    }
+
+                });
+            }
+            else
+            {
+                // means it has some records // prepare ajax post
+                $.ajax({
+                    url: '/api/AdditionalRequirementApi/ProjectCharter_Details_SaveChanges/',
+                    type: 'POST',
+                    data: JSON.stringify(additionalRequirementList),
+                    dataType: 'json',
+                    processData: false,
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data, status, xhr) {
+                        $("#targetMessage").html(data.message);
+                        $("#targetMessage").addClass("text-info");
+                        //setTimeout(function () {
+                        //    location.reload(true);
+                        //}, 5000);
+                    },
+                    error: function (xhr, status, error) {
+                        var err = eval("(" + xhr.responseText + ")");
+                        $("#targetMessage").html(err.message);
+                        $("#targetMessage").addClass("text-danger");
+                    }
+
+                });
+
+            }
+
+        }
+
+
+        function AddNew() {
+
+            var totalRow = $("#AdditionalRequirementTB > tbody > tr").length;
+            var nextRowNumber = totalRow + 1;
+            if (totalRow == 0) {
+                nextRowNumber = 1;
+            } else {
+                var $lastRow = $("#AdditionalRequirementTB > tbody > tr:last");
+                var rowIdStr = $lastRow.attr("id");
+                var strArray = rowIdStr.split("_");
+                var _rowId = parseInt(strArray[1]);
+                nextRowNumber = _rowId + 1;
+            }
+
+            // console.log(nextRowNumber);
+
+            var _primaryId = _primaryId_Prefix + nextRowNumber;
+            var _rowId = _rowId_Prefix + nextRowNumber;
+
+            var _requirementTextAreaId = _requirementTextAreaIdPrefixStr + nextRowNumber;
+            var _descriptionTextAreaId = _descriptionTextAreaIdPrefixStr + nextRowNumber;
+
+
+            $("#AdditionalRequirementTB").append(
+                '<tr id="' + _rowId + '"' + ' > ' +
+                        '<td>  ' +
+                               ' <textarea id="' + _requirementTextAreaId + '"' + 'class="form-control ' + _txtAreaClass + ' "' + '></textarea>' +
+                        '</td> ' +
+
+                       '<td>  ' +
+                               ' <textarea id="' + _descriptionTextAreaId + '"' + 'class="form-control ' + _txtAreaClass + ' "' + '></textarea>' +
+                        '</td> ' +
+
+                        '<td align="center" valign="middle" style="vertical-align:middle">' +
+                         '<button type="button" class="btn btn-warning dim" title="Delete record" onclick="LineItemDelete(' + nextRowNumber + ')"' + ' > <i class="fa fa-trash"></i> </button>' +
+                         '<input type="hidden" id="' + _primaryId + '"' + 'value="0" />' +
+                        '</td>' +
+                '</tr>');
+
+            SetTextAreaNoResize();
+
+        }
+
+
+        $(document).ready(function () {
+
+            SetTextAreaNoResize();
+        });
+
+</script>
+
+
+
+}
+
+
+
+

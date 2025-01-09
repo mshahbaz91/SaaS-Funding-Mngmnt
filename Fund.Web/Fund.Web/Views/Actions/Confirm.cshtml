@@ -1,0 +1,104 @@
+﻿@model HFund.Data.Models.FundingDetail
+@using HFund.Web.HtmlHelpers;
+@using HFund.Repository;
+
+
+
+@{
+    ViewBag.Title = "Action";
+    Layout = "~/Views/Shared/_TCLHINLayout.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="wrapper wrapper-content animated fadeIn">
+
+
+        <div class="row">
+            <div class="col-lg-2">
+                @if (ViewBag.EntityType == SystemValues.BusinessCaseTypeID || ViewBag.EntityType == SystemValues.FundingRequestTypeID)
+                {
+                    @Html.Partial("_BusinessCaseLeftSideMenu") }
+                else if (ViewBag.EntityType == SystemValues.ProjectTypeID)
+                {
+                    @Html.Partial("_ProjectLeftSideMenu") }
+                else if (ViewBag.EntityType == SystemValues.ProjectCharterTypeID)
+                {
+                    @Html.Partial("_ProjectCharterLeftSideMenu") }
+                else if (ViewBag.EntityType == SystemValues.AppendixATypeID)
+                {
+                    @Html.Partial("_AppendixALeftSideMenu") }
+                else if (ViewBag.EntityType == SystemValues.QuarterlyProjectReportTypeID)
+                {
+                    @Html.Partial("_ProjectQuarterlyReportLeftSideMenu") }
+                else if (ViewBag.EntityType == SystemValues.AdminLetterTypeID)
+                {
+                    @Html.Partial("_AdminLetterLeftSideMenu", Model.FundingDetailID) }
+                else if (ViewBag.EntityType == SystemValues.FundingSourceTypeID)
+                {
+                    @Html.Partial("_NonDiscreLeftSideMenu", Model.FundingDetailID) }
+                else if (ViewBag.EntityType == SystemValues.FundingLetterTypeID)
+                {
+                    @Html.Partial("_FundingLetterLeftSideMenu", Model.FundingDetailID)}
+            </div>
+
+            <div class="col-lg-10">
+                <div class="form-horizontal">
+                    <h4> Action </h4>
+                    @Html.Action("ProjectStatusInfo", "CommonPartialView", new { id = (int)ViewBag.FundingDetailID })
+                    <hr />
+                    <div class="row"><span style="color:green">@ViewBag.Message </span></div>
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+
+                    <div class="row">
+                        <div class="form-group">
+                            @Html.Label("From Status :", htmlAttributes: new { @class = "control-label col-lg-4" })
+                            <div class="col-lg-4">
+                                @Html.EditorFor(model => model.EntityStatu.StatusDescription, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                            </div>
+                            <div class="col-lg-4"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            @Html.Label("To Status :", htmlAttributes: new { @class = "control-label col-lg-4" })
+                            <div class="col-lg-4">
+                                @Html.TextBox("toStatus", (string)ViewBag.ToStatus, new { @class = "form-control text-box single-line", disabled = "disabled" })
+                            </div>
+                            <div class="col-lg-4"></div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        @Html.HiddenFor(model => model.FundingDetailID)
+                        @Html.HiddenFor(model => model.FundingEntityStatusID)
+                        @Html.HiddenFor(model => model.TaskID)
+                        @Html.Hidden("EditMode", 1)
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-lg-offset-4 col-lg-10">
+                                <input type="submit" value="Confirm" class="btn btn-success" />
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+}
+
+@section scripts {
+
+    <script src="~/Scripts/HFund/AjaxLoading.js"></script>
+}
